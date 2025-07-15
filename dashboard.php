@@ -32,6 +32,24 @@ $storage_percentage = min(($used_storage / $max_storage) * 100, 100);
 // Periksa batas penyimpanan
 $is_storage_full = ($used_storage >= $max_storage);
 
+// Ambil log aktivitas pengguna yang sedang login
+$logs_sql = "SELECT action, description, created_at FROM activity_logs WHERE user_id = ? ORDER BY created_at DESC";
+$stmt = $conn->prepare($logs_sql);
+$stmt->bind_param("i", $_SESSION['user_id']);
+$stmt->execute();
+$logs_result = $stmt->get_result();
+$logs = $logs_result->fetch_all(MYSQLI_ASSOC);
+$stmt->close();
+
+// Hitung total ukuran log dalam KB
+$logs_size_sql = "SELECT SUM(LENGTH(action) + LENGTH(description) + LENGTH(created_at)) as total_size FROM activity_logs WHERE user_id = ?";
+$stmt = $conn->prepare($logs_size_sql);
+$stmt->bind_param("i", $_SESSION['user_id']);
+$stmt->execute();
+$size_result = $stmt->get_result();
+$total_logs_size = $size_result->fetch_assoc()['total_size'] / 1024; // Konversi ke KB
+$stmt->close();
+
 // Fungsi untuk memetakan MIME type ke ikon Font Awesome
 function get_file_icon($file_type) {
     $icon_map = [
@@ -93,6 +111,10 @@ function get_file_icon($file_type) {
         }
         .storage-text.danger {
             color: #dc3545;
+        }
+        .log-textarea {
+            height: 200px;
+            resize: vertical;
         }
     </style>
 </head>
@@ -487,6 +509,18 @@ function get_file_icon($file_type) {
                             <label for="newPassword" class="form-label">Password Baru (Opsional)</label>
                             <input type="password" class="form-control" id="newPassword" name="newPassword" placeholder="Kosongkan jika tidak ingin mengubah">
                         </div>
+                        <div class="mb-3">
+                            <label class="form-label">Log Aktivitas</label>
+                            <textarea class="form-control log-textarea" id="activityLogs" readonly><?php
+                                foreach ($logs as $log) {
+                                    echo "Action: " . htmlspecialchars($log['action']) . "\n";
+                                    echo "Description: " . htmlspecialchars($log['description']) . "\n";
+                                    echo "Time: " . htmlspecialchars($log['created_at']) . "\n\n";
+                                }
+                            ?></textarea>
+                            <small class="text-muted">Total ukuran log: <?php echo number_format($total_logs_size, 2); ?> KB</small>
+                            <button type="button" class="btn btn-danger mt-2" id="clearLogs">Hapus Log</button>
+                        </div>
                         <button type="submit" class="btn btn-primary w-100">Simpan Perubahan</button>
                     </form>
                 </div>
@@ -550,6 +584,54 @@ function get_file_icon($file_type) {
                     text: 'Terjadi kesalahan jaringan.',
                     confirmButtonText: 'OK'
                 });
+            });
+        });
+
+        // Tambahkan logika untuk menghapus log
+        document.getElementById('clearLogs').addEventListener('click', function() {
+            Swal.fire({
+                title: 'Apakah Anda yakin?',
+                text: "Semua log aktivitas Anda akan dihapus secara permanen!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Ya, Hapus!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch('clear_logs.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: 'user_id=<?php echo $_SESSION['user_id']; ?>'
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            document.getElementById('activityLogs').value = '';
+                            Swal.fire(
+                                'Terhapus!',
+                                'Log aktivitas Anda telah dihapus.',
+                                'success'
+                            );
+                        } else {
+                            Swal.fire(
+                                'Error!',
+                                data.message || 'Gagal menghapus log.',
+                                'error'
+                            );
+                        }
+                    })
+                    .catch(error => {
+                        Swal.fire(
+                            'Error!',
+                            'Terjadi kesalahan jaringan.',
+                            'error'
+                        );
+                    });
+                }
             });
         });
     </script>
