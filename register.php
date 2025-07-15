@@ -11,7 +11,7 @@ require_once 'functions/auth.php';
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registrasi - Cloud Storage</title>
     <!-- Bootstrap 5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome untuk ikon -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <!-- Google Fonts: Poppins -->
@@ -19,7 +19,7 @@ require_once 'functions/auth.php';
     <!-- CSS Kustom -->
     <link rel="stylesheet" href="assets/css/style.css">
     <!-- SweetAlert2 -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="assets/vendor/sweetalert2/sweetalert2.all.min.js"></script>
 </head>
 <body>
     <!-- Konten Utama -->
@@ -110,6 +110,6 @@ require_once 'functions/auth.php';
     </div>
 
     <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

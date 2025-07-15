@@ -40,6 +40,7 @@ function login($conn, $email, $password) {
         $user = $result->fetch_assoc();
         if (password_verify($password, $user['password'])) {
             $_SESSION['user_id'] = $user['id'];
+            $_SESSION['email'] = $email;
             $_SESSION['username'] = $user['username'];
             session_regenerate_id(true);
             log_activity($conn, $user['id'], 'login', "User $user[username] logged in");

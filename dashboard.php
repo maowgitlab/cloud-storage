@@ -63,7 +63,7 @@ function get_file_icon($file_type) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - Cloud Storage</title>
     <!-- Bootstrap 5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome untuk ikon -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <!-- Google Fonts: Poppins -->
@@ -71,7 +71,7 @@ function get_file_icon($file_type) {
     <!-- CSS Kustom -->
     <link rel="stylesheet" href="assets/css/style.css">
     <!-- SweetAlert2 -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="assets/vendor/sweetalert2/sweetalert2.all.min.js"></script>
     <style>
         .storage-text {
             text-align: center;
@@ -108,6 +108,9 @@ function get_file_icon($file_type) {
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#settingsModal"><i class="fas fa-cog me-1"></i> Pengaturan</a>
+                    </li>
                     <li class="nav-item">
                         <a class="nav-link" href="logout.php"><i class="fas fa-sign-out-alt me-1"></i> Logout</a>
                     </li>
@@ -454,13 +457,50 @@ function get_file_icon($file_type) {
         </div>
     </div>
 
+    <!-- Modal untuk Pengaturan -->
+    <div class="modal fade" id="settingsModal" tabindex="-1" aria-labelledby="settingsModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="settingsModalLabel">Pengaturan Akun</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="settingsForm" method="POST" action="update_settings.php">
+                        <div class="mb-3">
+                            <label for="newUsername" class="form-label">Nama Pengguna Baru</label>
+                            <input type="text" class="form-control" id="newUsername" name="newUsername" value="<?php echo htmlspecialchars($_SESSION['username']); ?>">
+                        </div>
+                        <div class="mb-3">
+                            <label for="currentEmail" class="form-label">Email Lama</label>
+                            <input type="email" class="form-control" id="currentEmail" name="currentEmail" value="<?php echo htmlspecialchars($_SESSION['email'] ?? ''); ?>" readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label for="newEmail" class="form-label">Email Baru (Opsional)</label>
+                            <input type="email" class="form-control" id="newEmail" name="newEmail" placeholder="Kosongkan jika tidak ingin mengubah">
+                        </div>
+                        <div class="mb-3">
+                            <label for="currentPassword" class="form-label">Password Lama</label>
+                            <input type="password" class="form-control" id="currentPassword" name="currentPassword">
+                        </div>
+                        <div class="mb-3">
+                            <label for="newPassword" class="form-label">Password Baru (Opsional)</label>
+                            <input type="password" class="form-control" id="newPassword" name="newPassword" placeholder="Kosongkan jika tidak ingin mengubah">
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Simpan Perubahan</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Footer -->
     <footer class="bg-light text-center py-4 mt-5">
         <p class="text-muted mb-0">© <?php echo date('Y'); ?> Cloud Storage. All rights reserved.</p>
     </footer>
 
     <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="assets/js/script.js"></script>
     <script>
         // Tampilkan alert jika penyimpanan penuh saat halaman dimuat
@@ -472,6 +512,46 @@ function get_file_icon($file_type) {
                 confirmButtonText: 'OK'
             });
         <?php endif; ?>
+
+        // Tambahkan logika untuk form pengaturan
+        document.getElementById('settingsForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            fetch('update_settings.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Berhasil',
+                        text: 'Pengaturan diperbarui! Anda akan logout untuk menerapkan perubahan.',
+                        timer: 2000,
+                        timerProgressBar: true,
+                        willClose: () => {
+                            window.location.href = 'logout.php';
+                        }
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: data.message || 'Terjadi kesalahan saat memperbarui pengaturan.',
+                        confirmButtonText: 'OK'
+                    });
+                }
+            })
+            .catch(error => {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Terjadi kesalahan jaringan.',
+                    confirmButtonText: 'OK'
+                });
+            });
+        });
     </script>
 </body>
 </html>
