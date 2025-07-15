@@ -1,0 +1,289 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f4f7fa;
+    color: #333;
+}
+
+/* Navbar dengan Gradasi */
+.navbar {
+    background: linear-gradient(90deg, #007bff, #00c4ff);
+    padding: 1rem 0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-brand {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #fff !important;
+    transition: color 0.3s ease;
+}
+
+.navbar-brand i {
+    font-size: 1.8rem;
+    margin-right: 0.5rem;
+}
+
+.navbar-nav .nav-link {
+    color: #fff !important;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    transition: background 0.3s ease, color 0.3s ease;
+}
+
+.navbar-nav .nav-link:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+}
+
+/* Kartu File dan Statistik */
+.file-card, .stats-card {
+    background: #fff;
+    border-radius: 8px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.file-card:hover, .stats-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1) !important;
+    background: linear-gradient(180deg, #ffffff, #f8fbff);
+}
+
+.file-preview {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    border-radius: 4px;
+    border: 1px solid #e9ecef;
+}
+
+/* Dropzone */
+.dropzone {
+    border: 2px dashed #007bff;
+    border-radius: 8px;
+    padding: 2rem;
+    text-align: center;
+    background: #fff;
+    transition: all 0.3s ease;
+}
+
+.dropzone.dragover {
+    border-color: #00c4ff;
+    background: linear-gradient(180deg, #e6f3ff, #d0e7ff);
+    transform: scale(1.02);
+}
+
+.dropzone-content i {
+    transition: transform 0.3s ease;
+}
+
+.dropzone.dragover .dropzone-content i {
+    transform: scale(1.1);
+}
+
+/* Tab */
+.nav-tabs {
+    border-bottom: 2px solid #e9ecef;
+}
+
+.nav-tabs .nav-link {
+    color: #495057;
+    font-weight: 500;
+    border: none;
+    border-radius: 0;
+    padding: 0.75rem 1.5rem;
+    transition: all 0.3s ease;
+}
+
+.nav-tabs .nav-link.active {
+    color: #fff;
+    background: linear-gradient(90deg, #007bff, #00c4ff);
+    border: none;
+}
+
+.nav-tabs .nav-link:hover {
+    color: #0056b3;
+    background: rgba(0, 123, 255, 0.1);
+}
+
+
+/* Tombol Kustom */
+.btn-primary {
+    background: linear-gradient(90deg, #007bff, #00c4ff);
+    border: none;
+    border-radius: 4px;
+    padding: 0.5rem 1rem;
+    font-weight: 500;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(90deg, #0056b3, #0096cc);
+    transform: translateY(-2px);
+}
+
+.btn-success, .btn-info, .btn-warning, .btn-danger {
+    border-radius: 4px;
+    padding: 0.3rem 0.6rem;
+    font-size: 0.9rem;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn-success {
+    background-color: #28a745;
+    border-color: #28a745;
+}
+
+.btn-success:hover {
+    background-color: #218838;
+    border-color: #1e7e34;
+    transform: translateY(-2px);
+}
+
+.btn-info {
+    background-color: #17a2b8;
+    border-color: #17a2b8;
+}
+
+.btn-info:hover {
+    background-color: #138496;
+    border-color: #117a8b;
+    transform: translateY(-2px);
+}
+
+.btn-warning {
+    background-color: #ffc107;
+    border-color: #ffc107;
+}
+
+.btn-warning:hover {
+    background-color: #e0a800;
+    border-color: #d39e00;
+    transform: translateY(-2px);
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    border-color: #dc3545;
+}
+
+.btn-danger:hover {
+    background-color: #c82333;
+    border-color: #bd2130;
+    transform: translateY(-2px);
+}
+
+/* SweetAlert2 Kustom */
+.swal-modern {
+    border-radius: 8px;
+    font-family: 'Poppins', sans-serif;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.swal-title {
+    font-weight: 600;
+    color: #333;
+}
+
+.swal-content {
+    color: #555;
+}
+
+.swal-modern .btn-primary {
+    background: linear-gradient(90deg, #007bff, #00c4ff);
+    border: none;
+}
+
+.swal-modern .btn-primary:hover {
+    background: linear-gradient(90deg, #0056b3, #0096cc);
+}
+
+.swal-modern .btn-secondary {
+    background-color: #6c757d;
+    border: none;
+}
+
+.swal-modern .btn-secondary:hover {
+    background-color: #5a6268;
+}
+
+/* Modal */
+.modal-content {
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.modal-header {
+    background: linear-gradient(90deg, #007bff, #00c4ff);
+    color: #fff;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+}
+
+.modal-title {
+    font-weight: 600;
+}
+
+.modal-footer .btn {
+    border-radius: 4px;
+}
+
+/* Progress Bar */
+.progress {
+    border-radius: 4px;
+    background-color: #e9ecef;
+}
+
+.progress-bar {
+    background: linear-gradient(90deg, #28a745, #34ce57);
+    transition: width 0.3s ease;
+}
+
+/* Footer */
+footer {
+    background: linear-gradient(180deg, #f8f9fa, #e9ecef);
+    box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsivitas */
+@media (max-width: 576px) {
+    .navbar-brand {
+        font-size: 1.2rem;
+    }
+
+    .navbar-brand i {
+        font-size: 1.4rem;
+    }
+
+    .file-card .card-body {
+        padding: 0.75rem;
+    }
+    
+    .file-preview {
+        width: 30px;
+        height: 30px;
+    }
+    
+    .btn-sm {
+        padding: 0.2rem 0.4rem;
+        font-size: 0.8rem;
+    }
+    
+    .dropzone {
+        padding: 1rem;
+    }
+
+    .nav-tabs .nav-link {
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+    }
+
+    .modal-dialog {
+        margin: 0.5rem;
+    }
+}
