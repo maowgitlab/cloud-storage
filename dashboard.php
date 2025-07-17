@@ -139,6 +139,12 @@ function get_existing_public_link($conn, $file_id) {
             padding: 8px;
             border: 1px solid #ccc;
             border-radius: 4px;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        .search-container input:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+            outline: none;
         }
         .no-results {
             text-align: center;
@@ -147,6 +153,23 @@ function get_existing_public_link($conn, $file_id) {
         .public-link {
             word-break: break-all;
             margin-top: 5px;
+        }
+        .public-link a {
+            color: #fff;
+            background: linear-gradient(90deg, #007bff, #00c4ff);
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+            text-decoration: none;
+            transition: background 0.3s ease, transform 0.2s ease;
+        }
+        .public-link a:hover {
+            background: linear-gradient(90deg, #0056b3, #0096cc);
+            transform: translateY(-2px);
+        }
+        .public-link button {
+            margin-left: 5px;
+            padding: 0.2rem 0.5rem;
+            font-size: 0.8rem;
         }
     </style>
 </head>
@@ -270,11 +293,11 @@ function get_existing_public_link($conn, $file_id) {
                 </div>
                 <div class="col-12 col-md-4">
                     <div class="search-container">
-                        <input type="text" id="searchInput" class="form-control" placeholder="Cari file..." autocomplete="off">
+                        <input type="text" id="searchInput" class="form-control search-input" placeholder="Cari file..." autocomplete="off">
                     </div>
-                    <button id="backupSelectedBtn" class="btn btn-warning me-2" style="display: none;"><i class="fas fa-download me-2"></i> Backup</button>
-                    <button id="shareSelectedBtn" class="btn btn-info me-2" style="display: none;"><i class="fas fa-share-alt me-2"></i> Bagikan Terpilih</button>
-                    <button id="deleteSelectedBtn" class="btn btn-danger" style="display: none;"><i class="fas fa-trash me-2"></i> Hapus Terpilih</button>
+                    <button id="backupSelectedBtn" class="btn btn-gradient me-2" style="display: none;"><i class="fas fa-download me-2"></i> Backup</button>
+                    <button id="shareSelectedBtn" class="btn btn-gradient me-2" style="display: none;"><i class="fas fa-share-alt me-2"></i> Bagikan Terpilih</button>
+                    <button id="deleteSelectedBtn" class="btn btn-gradient" style="display: none;"><i class="fas fa-trash me-2"></i> Hapus Terpilih</button>
                 </div>
                 <hr>
                 <?php if (empty($personal_files)): ?>
@@ -307,11 +330,11 @@ function get_existing_public_link($conn, $file_id) {
                                         </div>
                                         <small class="text-muted d-block mb-2"><?php echo $file['uploaded_at']; ?></small>
                                         <div class="d-flex justify-content-end">
-                                            <a href="download.php?id=<?php echo $file['id']; ?>" class="btn btn-sm btn-success me-1" title="Unduh"><i class="fas fa-download"></i></a>
-                                            <button onclick="shareFile(<?php echo $file['id']; ?>)" class="btn btn-sm btn-info me-1" title="Bagikan"><i class="fas fa-share-alt"></i></button>
-                                            <button onclick="renameFile(<?php echo $file['id']; ?>, '<?php echo htmlspecialchars($file['file_name']); ?>')" class="btn btn-sm btn-warning me-1" title="Ubah Nama"><i class="fas fa-edit"></i></button>
-                                            <button onclick="deleteFile(<?php echo $file['id']; ?>)" class="btn btn-sm btn-danger" title="Hapus"><i class="fas fa-trash"></i></button>
-                                            <button onclick="generatePublicLink(<?php echo $file['id']; ?>)" class="btn btn-sm btn-secondary" title="Tautan Publik"><i class="fas fa-link"></i></button>
+                                            <a href="download.php?id=<?php echo $file['id']; ?>" class="btn btn-sm btn-gradient me-1" title="Unduh"><i class="fas fa-download"></i></a>
+                                            <button onclick="shareFile(<?php echo $file['id']; ?>)" class="btn btn-sm btn-gradient me-1" title="Bagikan"><i class="fas fa-share-alt"></i></button>
+                                            <button onclick="renameFile(<?php echo $file['id']; ?>, '<?php echo htmlspecialchars($file['file_name']); ?>')" class="btn btn-sm btn-gradient me-1" title="Ubah Nama"><i class="fas fa-edit"></i></button>
+                                            <button onclick="deleteFile(<?php echo $file['id']; ?>)" class="btn btn-sm btn-gradient" title="Hapus"><i class="fas fa-trash"></i></button>
+                                            <button onclick="generatePublicLink(<?php echo $file['id']; ?>)" class="btn btn-sm btn-gradient" title="Tautan Publik"><i class="fas fa-link"></i></button>
                                         </div>
                                         <div id="publicLink_<?php echo $file['id']; ?>" class="public-link" style="display: <?php echo get_existing_public_link($conn, $file['id']) ? 'block' : 'none'; ?>;">
                                             <a href="<?php echo get_existing_public_link($conn, $file['id']) ?: '#'; ?>" id="publicLinkUrl_<?php echo $file['id']; ?>" target="_blank"><?php echo get_existing_public_link($conn, $file['id']) ?: 'Klik untuk buka'; ?></a>
@@ -371,8 +394,8 @@ function get_existing_public_link($conn, $file_id) {
                                             </div>
                                             <small class="text-muted d-block mb-2"><?php echo $file['uploaded_at']; ?> (Upload)</small>
                                             <div class="d-flex justify-content-end">
-                                                <a href="#" class="btn btn-sm btn-success me-1 download-link" data-file-id="<?php echo $file['file_id']; ?>" data-password="<?php echo $file['password'] ? 'true' : 'false'; ?>" data-file-name="<?php echo htmlspecialchars($file['file_name']); ?>" title="Unduh"><i class="fas fa-download"></i></a>
-                                                <button onclick="deleteShare(<?php echo $file['share_id']; ?>, '<?php echo htmlspecialchars($file['file_name']); ?>')" class="btn btn-sm btn-danger" title="Hapus Sharing"><i class="fas fa-trash"></i></button>
+                                                <a href="#" class="btn btn-sm btn-gradient me-1 download-link" data-file-id="<?php echo $file['file_id']; ?>" data-password="<?php echo $file['password'] ? 'true' : 'false'; ?>" data-file-name="<?php echo htmlspecialchars($file['file_name']); ?>" title="Unduh"><i class="fas fa-download"></i></a>
+                                                <button onclick="deleteShare(<?php echo $file['share_id']; ?>, '<?php echo htmlspecialchars($file['file_name']); ?>')" class="btn btn-sm btn-gradient" title="Hapus Sharing"><i class="fas fa-trash"></i></button>
                                             </div>
                                         </div>
                                     </div>
@@ -424,8 +447,8 @@ function get_existing_public_link($conn, $file_id) {
                                             </div>
                                             <small class="text-muted d-block mb-2"><?php echo $file['uploaded_at']; ?> (Upload)</small>
                                             <div class="d-flex justify-content-end">
-                                                <a href="download.php?id=<?php echo $file['file_id']; ?>" class="btn btn-sm btn-success me-1" title="Unduh"><i class="fas fa-download"></i></a>
-                                                <button onclick="deleteShare(<?php echo $file['share_id']; ?>, '<?php echo htmlspecialchars($file['file_name']); ?>')" class="btn btn-sm btn-danger" title="Hapus Sharing"><i class="fas fa-trash"></i></button>
+                                                <a href="download.php?id=<?php echo $file['file_id']; ?>" class="btn btn-sm btn-gradient me-1" title="Unduh"><i class="fas fa-download"></i></a>
+                                                <button onclick="deleteShare(<?php echo $file['share_id']; ?>, '<?php echo htmlspecialchars($file['file_name']); ?>')" class="btn btn-sm btn-gradient" title="Hapus Sharing"><i class="fas fa-trash"></i></button>
                                             </div>
                                         </div>
                                     </div>

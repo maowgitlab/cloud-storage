@@ -111,7 +111,6 @@ body {
     background: rgba(0, 123, 255, 0.1);
 }
 
-
 /* Tombol Kustom */
 .btn-primary {
     background: linear-gradient(90deg, #007bff, #00c4ff);
@@ -123,6 +122,21 @@ body {
 }
 
 .btn-primary:hover {
+    background: linear-gradient(90deg, #0056b3, #0096cc);
+    transform: translateY(-2px);
+}
+
+.btn-gradient {
+    background: linear-gradient(90deg, #007bff, #00c4ff);
+    border: none;
+    border-radius: 4px;
+    padding: 0.3rem 0.6rem;
+    font-size: 0.9rem;
+    color: #fff;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.btn-gradient:hover {
     background: linear-gradient(90deg, #0056b3, #0096cc);
     transform: translateY(-2px);
 }
@@ -248,6 +262,22 @@ body {
 footer {
     background: linear-gradient(180deg, #f8f9fa, #e9ecef);
     box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Search Input */
+.search-input {
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.search-input:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    outline: none;
 }
 
 /* Responsivitas */
