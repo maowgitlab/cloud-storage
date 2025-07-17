@@ -385,7 +385,8 @@ function get_existing_public_link($conn, $file_id) {
                                                     <h6 class="card-title mb-0 text-truncate"><?php echo htmlspecialchars($file['file_name']); ?></h6>
                                                     <small class="text-muted"><?php echo number_format($file['file_size'] / 1024, 2); ?> KB | Dibagikan oleh: <?php echo htmlspecialchars($file['from_username']); ?> pada <?php echo $file['shared_at']; ?></small>
                                                     <?php if ($file['note']): ?>
-                                                        <small class="text-muted d-block">Catatan: <?php echo htmlspecialchars($file['note']); ?></small>
+                                                        <small class="text-muted d-block">Catatan: </small>
+                                                        <p class="text-wrap"><?php echo htmlspecialchars($file['note']); ?></p>
                                                     <?php endif; ?>
                                                     <?php if ($file['password']): ?>
                                                         <small class="text-muted d-block"><i class="fas fa-lock me-1"></i> Dilindungi dengan password</small>
@@ -438,7 +439,8 @@ function get_existing_public_link($conn, $file_id) {
                                                     <h6 class="card-title mb-0 text-truncate"><?php echo htmlspecialchars($file['file_name']); ?></h6>
                                                     <small class="text-muted"><?php echo number_format($file['file_size'] / 1024, 2); ?> KB | Dibagikan ke: <?php echo htmlspecialchars($file['to_username']); ?> pada <?php echo $file['shared_at']; ?></small>
                                                     <?php if ($file['note']): ?>
-                                                        <small class="text-muted d-block">Catatan: <?php echo htmlspecialchars($file['note']); ?></small>
+                                                        <small class="text-muted d-block">Catatan: </small>
+                                                        <p class="text-wrap"><?php echo htmlspecialchars($file['note']); ?></p>
                                                     <?php endif; ?>
                                                     <?php if ($file['password']): ?>
                                                         <small class="text-muted d-block"><i class="fas fa-lock me-1"></i> Dilindungi dengan password</small>
