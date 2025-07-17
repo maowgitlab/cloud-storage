@@ -72,6 +72,21 @@ function get_file_icon($file_type) {
     
     return isset($icon_map[$file_type]) ? $icon_map[$file_type] : 'fa-file';
 }
+
+// Fungsi untuk mengambil tautan publik yang sudah ada
+function get_existing_public_link($conn, $file_id) {
+    $sql = "SELECT uuid, file_path FROM public_links WHERE file_id = ? AND expires_at > NOW()";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $file_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    if ($result->num_rows > 0) {
+        $link = $result->fetch_assoc();
+        $base_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]";
+        return $base_url . '/cloud-storage/download_public.php?uuid=' . $link['uuid'];
+    }
+    return null;
+}
 ?>
 
 <!DOCTYPE html>
@@ -298,8 +313,8 @@ function get_file_icon($file_type) {
                                             <button onclick="deleteFile(<?php echo $file['id']; ?>)" class="btn btn-sm btn-danger" title="Hapus"><i class="fas fa-trash"></i></button>
                                             <button onclick="generatePublicLink(<?php echo $file['id']; ?>)" class="btn btn-sm btn-secondary" title="Tautan Publik"><i class="fas fa-link"></i></button>
                                         </div>
-                                        <div id="publicLink_<?php echo $file['id']; ?>" class="public-link" style="display: none;">
-                                            <a href="#" id="publicLinkUrl_<?php echo $file['id']; ?>" target="_blank">Klik untuk buka</a>
+                                        <div id="publicLink_<?php echo $file['id']; ?>" class="public-link" style="display: <?php echo get_existing_public_link($conn, $file['id']) ? 'block' : 'none'; ?>;">
+                                            <a href="<?php echo get_existing_public_link($conn, $file['id']) ?: '#'; ?>" id="publicLinkUrl_<?php echo $file['id']; ?>" target="_blank"><?php echo get_existing_public_link($conn, $file['id']) ?: 'Klik untuk buka'; ?></a>
                                             <button onclick="copyToClipboard('publicLinkUrl_<?php echo $file['id']; ?>')" class="btn btn-sm btn-success ms-2"><i class="fas fa-copy"></i></button>
                                             <button onclick="revokePublicLink(<?php echo $file['id']; ?>)" class="btn btn-sm btn-danger ms-2"><i class="fas fa-trash"></i></button>
                                         </div>
@@ -690,104 +705,104 @@ function get_file_icon($file_type) {
 
         // Fungsi untuk menghasilkan tautan publik
         function generatePublicLink(fileId) {
-        fetch('generate_public_link.php', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: 'file_id=' + fileId
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                const linkDiv = document.getElementById('publicLink_' + fileId);
-                const linkUrl = document.getElementById('publicLinkUrl_' + fileId);
-                linkUrl.href = data.link; // Menggunakan URL yang dikembalikan dari server
-                linkUrl.textContent = data.link;
-                linkDiv.style.display = 'block';
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Berhasil',
-                    text: 'Tautan publik telah dihasilkan!',
-                    confirmButtonText: 'OK'
-                });
-            } else {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: data.message || 'Gagal menghasilkan tautan publik.',
-                    confirmButtonText: 'OK'
-                });
-            }
-        })
-        .catch(error => {
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: 'Terjadi kesalahan jaringan.',
-                confirmButtonText: 'OK'
-            });
-        });
-    }
-
-    // Fungsi untuk mencabut tautan publik
-    function revokePublicLink(fileId) {
-        fetch('revoke_public_link.php', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: 'file_id=' + fileId
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                const linkDiv = document.getElementById('publicLink_' + fileId);
-                linkDiv.style.display = 'none';
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Berhasil',
-                    text: 'Tautan publik telah dicabut!',
-                    confirmButtonText: 'OK'
-                });
-            } else {
+            fetch('generate_public_link.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: 'file_id=' + fileId
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const linkDiv = document.getElementById('publicLink_' + fileId);
+                    const linkUrl = document.getElementById('publicLinkUrl_' + fileId);
+                    linkUrl.href = data.link;
+                    linkUrl.textContent = data.link;
+                    linkDiv.style.display = 'block';
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Berhasil',
+                        text: 'Tautan publik telah dihasilkan!',
+                        confirmButtonText: 'OK'
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: data.message || 'Gagal menghasilkan tautan publik.',
+                        confirmButtonText: 'OK'
+                    });
+                }
+            })
+            .catch(error => {
                 Swal.fire({
                     icon: 'error',
                     title: 'Error',
-                    text: data.message || 'Gagal mencabut tautan publik.',
+                    text: 'Terjadi kesalahan jaringan.',
                     confirmButtonText: 'OK'
                 });
-            }
-        })
-        .catch(error => {
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: 'Terjadi kesalahan jaringan.',
-                confirmButtonText: 'OK'
             });
-        });
-    }
+        }
 
-    // Fungsi untuk menyalin tautan ke clipboard
-    function copyToClipboard(elementId) {
-        const link = document.getElementById(elementId);
-        navigator.clipboard.writeText(link.href).then(() => {
-            Swal.fire({
-                icon: 'success',
-                title: 'Berhasil',
-                text: 'Tautan telah disalin ke clipboard!',
-                confirmButtonText: 'OK'
+        // Fungsi untuk mencabut tautan publik
+        function revokePublicLink(fileId) {
+            fetch('revoke_public_link.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: 'file_id=' + fileId
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const linkDiv = document.getElementById('publicLink_' + fileId);
+                    linkDiv.style.display = 'none';
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Berhasil',
+                        text: 'Tautan publik telah dicabut!',
+                        confirmButtonText: 'OK'
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: data.message || 'Gagal mencabut tautan publik.',
+                        confirmButtonText: 'OK'
+                    });
+                }
+            })
+            .catch(error => {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Terjadi kesalahan jaringan.',
+                    confirmButtonText: 'OK'
+                });
             });
-        }).catch(err => {
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: 'Gagal menyalin tautan.',
-                confirmButtonText: 'OK'
+        }
+
+        // Fungsi untuk menyalin tautan ke clipboard
+        function copyToClipboard(elementId) {
+            const link = document.getElementById(elementId);
+            navigator.clipboard.writeText(link.href).then(() => {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil',
+                    text: 'Tautan telah disalin ke clipboard!',
+                    confirmButtonText: 'OK'
+                });
+            }).catch(err => {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Gagal menyalin tautan.',
+                    confirmButtonText: 'OK'
+                });
             });
-        });
-    }
+        }
     </script>
 </body>
 </html>
