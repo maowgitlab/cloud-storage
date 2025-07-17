@@ -116,6 +116,19 @@ function get_file_icon($file_type) {
             height: 200px;
             resize: vertical;
         }
+        .search-container {
+            margin-bottom: 20px;
+        }
+        .search-container input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .no-results {
+            text-align: center;
+            color: #666;
+        }
     </style>
 </head>
 <body>
@@ -235,20 +248,24 @@ function get_file_icon($file_type) {
             <div class="tab-pane fade show active" id="personal" role="tabpanel" aria-labelledby="personal-tab">
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <h4 class="fw-semibold"><i class="fas fa-folder-open me-2"></i> Daftar File Pribadi</h4>
-                    <div>
-                        <button id="backupSelectedBtn" class="btn btn-warning me-2" style="display: none;"><i class="fas fa-download me-2"></i> Backup</button>
-                        <button id="shareSelectedBtn" class="btn btn-info me-2" style="display: none;"><i class="fas fa-share-alt me-2"></i> Bagikan Terpilih</button>
-                        <button id="deleteSelectedBtn" class="btn btn-danger" style="display: none;"><i class="fas fa-trash me-2"></i> Hapus Terpilih</button>
-                    </div>
                 </div>
+                <div class="col-12 col-md-4">
+                    <div class="search-container">
+                        <input type="text" id="searchInput" class="form-control" placeholder="Cari file..." autocomplete="off">
+                    </div>
+                    <button id="backupSelectedBtn" class="btn btn-warning me-2" style="display: none;"><i class="fas fa-download me-2"></i> Backup</button>
+                    <button id="shareSelectedBtn" class="btn btn-info me-2" style="display: none;"><i class="fas fa-share-alt me-2"></i> Bagikan Terpilih</button>
+                    <button id="deleteSelectedBtn" class="btn btn-danger" style="display: none;"><i class="fas fa-trash me-2"></i> Hapus Terpilih</button>
+                </div>
+                <hr>
                 <?php if (empty($personal_files)): ?>
                     <div class="col-12 text-center">
                         <p class="text-muted">Belum ada file pribadi yang diunggah.</p>
                     </div>
                 <?php else: ?>
-                    <div class="row">
+                    <div class="row" id="fileList">
                         <?php foreach ($personal_files as $file): ?>
-                            <div class="col-lg-4 col-md-6 mb-4">
+                            <div class="col-lg-4 col-md-6 mb-4 file-item" data-file-name="<?php echo strtolower(htmlspecialchars($file['file_name'])); ?>">
                                 <div class="card shadow-sm border-0 file-card">
                                     <div class="card-body p-3">
                                         <div class="d-flex align-items-center mb-2">
@@ -281,6 +298,7 @@ function get_file_icon($file_type) {
                             </div>
                         <?php endforeach; ?>
                     </div>
+                    <div id="noResults" class="no-results" style="display: none;">Tidak ada hasil yang ditemukan.</div>
                 <?php endif; ?>
             </div>
 
@@ -289,6 +307,7 @@ function get_file_icon($file_type) {
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <h4 class="fw-semibold"><i class="fas fa-share-alt me-2"></i> Daftar File Sharing</h4>
                 </div>
+                <hr>
                 <!-- File yang Dibagikan ke Anda -->
                 <h5 class="fw-semibold mb-3">Diterima dari Pengguna Lain</h5>
                 <?php if (empty($shared_files_received)): ?>
@@ -633,6 +652,30 @@ function get_file_icon($file_type) {
                     });
                 }
             });
+        });
+
+        // Logika untuk pencarian instan
+        document.getElementById('searchInput').addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase().trim();
+            const fileItems = document.querySelectorAll('.file-item');
+            let hasResults = false;
+
+            fileItems.forEach(item => {
+                const fileName = item.getAttribute('data-file-name');
+                if (fileName.includes(searchTerm)) {
+                    item.style.display = '';
+                    hasResults = true;
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+
+            const noResults = document.getElementById('noResults');
+            if (hasResults) {
+                noResults.style.display = 'none';
+            } else {
+                noResults.style.display = 'block';
+            }
         });
     </script>
 </body>
