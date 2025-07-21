@@ -55,7 +55,7 @@ function upload_file($conn, $user_id, $file) {
     }
     
     // Validasi ukuran file (maksimum 10MB per file)
-    if ($file_size > 10 * 1024 * 1024) {
+    if ($file_size > 30 * 1024 * 1024) {
         error_log("File too large: $file_name ($file_size bytes)");
         return ['success' => false, 'message' => "File terlalu besar: $file_name (maksimum 10MB)"];
     }
