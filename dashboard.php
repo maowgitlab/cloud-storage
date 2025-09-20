@@ -295,6 +295,10 @@ function get_existing_public_link($conn, $file_id) {
                     <div class="search-container">
                         <input type="text" id="searchInput" class="form-control search-input" placeholder="Cari file..." autocomplete="off">
                     </div>
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" id="selectAllFiles">
+                        <label class="form-check-label" for="selectAllFiles">Pilih Semua</label>
+                    </div>
                     <button id="backupSelectedBtn" class="btn btn-gradient me-2" style="display: none;"><i class="fas fa-download me-2"></i> Backup</button>
                     <button id="shareSelectedBtn" class="btn btn-gradient me-2" style="display: none;"><i class="fas fa-share-alt me-2"></i> Bagikan Terpilih</button>
                     <button id="deleteSelectedBtn" class="btn btn-gradient" style="display: none;"><i class="fas fa-trash me-2"></i> Hapus Terpilih</button>
