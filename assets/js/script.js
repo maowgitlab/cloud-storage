@@ -236,15 +236,52 @@ const checkboxes = document.querySelectorAll('.file-checkbox');
 const deleteSelectedBtn = document.getElementById('deleteSelectedBtn');
 const shareSelectedBtn = document.getElementById('shareSelectedBtn');
 const backupSelectedBtn = document.getElementById('backupSelectedBtn');
+const selectAllCheckbox = document.getElementById('selectAllFiles');
+
+function updateSelectionUI() {
+    const totalCheckboxes = checkboxes.length;
+    const checkedCount = document.querySelectorAll('.file-checkbox:checked').length;
+
+    if (deleteSelectedBtn) {
+        deleteSelectedBtn.style.display = checkedCount > 0 ? 'inline-block' : 'none';
+    }
+    if (shareSelectedBtn) {
+        shareSelectedBtn.style.display = checkedCount > 0 ? 'inline-block' : 'none';
+    }
+    if (backupSelectedBtn) {
+        backupSelectedBtn.style.display = checkedCount > 0 ? 'inline-block' : 'none';
+    }
+
+    if (selectAllCheckbox) {
+        selectAllCheckbox.disabled = totalCheckboxes === 0;
+        if (totalCheckboxes === 0) {
+            selectAllCheckbox.indeterminate = false;
+            selectAllCheckbox.checked = false;
+            return;
+        }
+
+        selectAllCheckbox.indeterminate = checkedCount > 0 && checkedCount < totalCheckboxes;
+        selectAllCheckbox.checked = checkedCount === totalCheckboxes;
+    }
+}
 
 checkboxes.forEach(checkbox => {
     checkbox.addEventListener('change', () => {
-        const checkedCount = document.querySelectorAll('.file-checkbox:checked').length;
-        deleteSelectedBtn.style.display = checkedCount > 0 ? 'inline-block' : 'none';
-        shareSelectedBtn.style.display = checkedCount > 0 ? 'inline-block' : 'none';
-        backupSelectedBtn.style.display = checkedCount > 0 ? 'inline-block' : 'none';
+        updateSelectionUI();
     });
 });
+
+if (selectAllCheckbox) {
+    selectAllCheckbox.addEventListener('change', () => {
+        const shouldCheckAll = selectAllCheckbox.checked;
+        checkboxes.forEach(checkbox => {
+            checkbox.checked = shouldCheckAll;
+        });
+        updateSelectionUI();
+    });
+}
+
+updateSelectionUI();
 
 deleteSelectedBtn.addEventListener('click', () => {
     const selectedIds = Array.from(document.querySelectorAll('.file-checkbox:checked')).map(cb => cb.value);
