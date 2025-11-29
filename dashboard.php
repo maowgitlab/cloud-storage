@@ -300,6 +300,10 @@ function get_existing_public_link($conn, $file_id) {
                     <button id="deleteSelectedBtn" class="btn btn-gradient" style="display: none;"><i class="fas fa-trash me-2"></i> Hapus Terpilih</button>
                 </div>
                 <hr>
+                <div class="mb-2">
+                    <input type="checkbox" id="selectAll" class="me-2">
+                    <label for="selectAll">Pilih Semua</label>
+                </div>
                 <?php if (empty($personal_files)): ?>
                     <div class="col-12 text-center">
                         <p class="text-muted">Belum ada file pribadi yang diunggah.</p>
@@ -606,6 +610,41 @@ function get_existing_public_link($conn, $file_id) {
     <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="assets/js/script.js"></script>
     <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const selectAllCheckbox = document.getElementById('selectAll');
+            const fileCheckboxes = document.querySelectorAll('.file-checkbox');
+
+            const backupBtn = document.getElementById('backupSelectedBtn');
+            const shareBtn = document.getElementById('shareSelectedBtn');
+            const deleteBtn = document.getElementById('deleteSelectedBtn');
+
+            // Fungsi untuk menampilkan atau menyembunyikan tombol aksi
+            function updateActionButtons() {
+                const anyChecked = document.querySelectorAll('.file-checkbox:checked').length > 0;
+
+                backupBtn.style.display = anyChecked ? 'inline-block' : 'none';
+                shareBtn.style.display = anyChecked ? 'inline-block' : 'none';
+                deleteBtn.style.display = anyChecked ? 'inline-block' : 'none';
+
+                // Update state “Pilih Semua”
+                if (fileCheckboxes.length > 0) {
+                    selectAllCheckbox.checked =
+                        document.querySelectorAll('.file-checkbox:checked').length === fileCheckboxes.length;
+                }
+            }
+
+            // Event: Klik "Pilih Semua"
+            selectAllCheckbox.addEventListener('change', function () {
+                fileCheckboxes.forEach(cb => cb.checked = selectAllCheckbox.checked);
+                updateActionButtons();
+            });
+
+            // Event: Klik checkbox individual
+            fileCheckboxes.forEach(cb => {
+                cb.addEventListener('change', updateActionButtons);
+            });
+        });
+
         // Tampilkan alert jika penyimpanan penuh saat halaman dimuat
         <?php if ($is_storage_full): ?>
             Swal.fire({
