@@ -36,7 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['file_id'])) {
         // Generate UUID baru
         $uuid = uniqid() . '-' . bin2hex(random_bytes(4)); // UUID sederhana untuk contoh
         $base_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]";
-        $public_link = $base_url . '/cloud-storage/download_public.php?uuid=' . $uuid; // Menggunakan query string untuk akses
+        $public_link = $base_url . '/download_public.php?uuid=' . $uuid; // Menggunakan query string untuk akses
 
         // Simpan tautan publik ke database
         $sql = "INSERT INTO public_links (file_id, uuid, file_path, created_at, expires_at) VALUES (?, ?, ?, NOW(), DATE_ADD(NOW(), INTERVAL 24 HOUR))";

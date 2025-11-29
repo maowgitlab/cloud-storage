@@ -83,7 +83,7 @@ function get_existing_public_link($conn, $file_id) {
     if ($result->num_rows > 0) {
         $link = $result->fetch_assoc();
         $base_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]";
-        return $base_url . '/cloud-storage/download_public.php?uuid=' . $link['uuid'];
+        return $base_url . '/download_public.php?uuid=' . $link['uuid'];
     }
     return null;
 }
@@ -610,7 +610,7 @@ function get_existing_public_link($conn, $file_id) {
     <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="assets/js/script.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('DOMContentLoaded', function () {
             const selectAllCheckbox = document.getElementById('selectAll');
             const fileCheckboxes = document.querySelectorAll('.file-checkbox');
 
@@ -644,7 +644,7 @@ function get_existing_public_link($conn, $file_id) {
                 cb.addEventListener('change', updateActionButtons);
             });
         });
-
+        
         // Tampilkan alert jika penyimpanan penuh saat halaman dimuat
         <?php if ($is_storage_full): ?>
             Swal.fire({
